@@ -3,7 +3,7 @@ import { NewContactForm } from './NewContactForm/NewContactForm';
 import { nanoid } from 'nanoid';
 import { SearchBar } from './SearchBar/SearchBar';
 import { Container } from '@mui/material';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useState } from 'react';
 
 export const App = () => {
   const [contacts, setContacts] = useState([
@@ -14,16 +14,13 @@ export const App = () => {
   ]);
   const [filter, setFilter] = useState('');
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const savedContacts = localStorage.getItem('contacts');
     if (savedContacts) {
       setContacts(JSON.parse(savedContacts));
+      console.log(JSON.parse(savedContacts));
     }
   }, []);
-
-  useEffect(() => {
-    localStorage.setItem('contacts', JSON.stringify(contacts));
-  }, [contacts]);
 
   const addNewContact = newContact => {
     const isInContacts = contacts.filter(contact => {
@@ -34,6 +31,10 @@ export const App = () => {
       alert(`${newContact.name} is already in contacts`);
       return;
     }
+    localStorage.setItem(
+      'contacts',
+      JSON.stringify([...contacts, { id: nanoid(), ...newContact }])
+    );
     setContacts([...contacts, { id: nanoid(), ...newContact }]);
   };
 
@@ -42,7 +43,9 @@ export const App = () => {
   };
 
   const onDeleteContact = contactId => {
-    setContacts(contacts.filter(contacts => contacts.id !== contactId));
+    const newContacts = contacts.filter(contacts => contacts.id !== contactId);
+    localStorage.setItem('contacts', JSON.stringify([...newContacts]));
+    setContacts(newContacts);
   };
 
   const visibleContacts = useMemo(() => {
