@@ -3,7 +3,7 @@ import { NewContactForm } from './NewContactForm/NewContactForm';
 import { nanoid } from 'nanoid';
 import { SearchBar } from './SearchBar/SearchBar';
 import { Container } from '@mui/material';
-import { useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 export const App = () => {
   const [contacts, setContacts] = useState([
@@ -14,7 +14,7 @@ export const App = () => {
   ]);
   const [filter, setFilter] = useState('');
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const savedContacts = localStorage.getItem('contacts');
     if (savedContacts) {
       setContacts(JSON.parse(savedContacts));
